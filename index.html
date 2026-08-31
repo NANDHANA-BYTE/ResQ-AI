@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResQ AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .sos-btn {
+            width: 100%;
+            padding: 20px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 12px;
+            margin-top: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 12px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        .option {
+            padding: 12px;
+            margin-top: 8px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #ddd;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin-top: 8px;
+            background: #f3f4f6;
+            border-left: 4px solid #2563eb;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<header>
+
+    <h1>🚨 ResQ AI</h1>
+
+    <p>
+        Intelligent Emergency Response &
+        Assistance System
+    </p>
+
+</header>
+
+
+<div class="container">
+
+    <div class="grid">
+
+
+        <!-- SOS -->
+
+        <div class="card">
+
+            <h2>🚨 Emergency SOS</h2>
+
+            <p>
+                Press the button during an emergency.
+            </p>
+
+            <button
+                class="sos-btn"
+                onclick="sendSOS()">
+
+                🚨 SEND SOS
+
+            </button>
+
+            <div
+                class="result"
+                id="sosResult">
+
+                System is ready.
+
+            </div>
+
+        </div>
+
+
+        <!-- Emergency Type -->
+
+        <div class="card">
+
+            <h2>⚠️ Select Emergency</h2>
+
+
+            <div
+                class="option"
+                onclick="selectEmergency('Road Accident')">
+
+                🚗 Road Accident
+
+            </div>
+
+
+            <div
+                class="option"
+                onclick="selectEmergency('Medical Emergency')">
+
+                🏥 Medical Emergency
+
+            </div>
+
+
+            <div
+                class="option"
+                onclick="selectEmergency('Fire Emergency')">
+
+                🔥 Fire Emergency
+
+            </div>
+
+
+            <div
+                class="result"
+                id="emergencyResult">
+
+                No emergency selected.
+
+            </div>
+
+        </div>
+
+
+        <!-- Location -->
+
+        <div class="card">
+
+            <h2>📍 Live Location</h2>
+
+            <p>
+                Get your current location.
+            </p>
+
+
+            <button
+                onclick="getLocation()">
+
+                Get My Location
+
+            </button>
+
+
+            <div
+                class="result"
+                id="locationResult">
+
+                Location not available yet.
+
+            </div>
+
+        </div>
+
+
+        <!-- AI Assistant -->
+
+        <div class="card">
+
+            <h2>🤖 ResQ AI Assistant</h2>
+
+            <p>
+                Describe your emergency.
+            </p>
+
+
+            <textarea
+                id="userMessage"
+                placeholder="Example: I met with an accident and need help">
+            </textarea>
+
+
+            <button
+                onclick="analyzeEmergency()">
+
+                Analyze Emergency
+
+            </button>
+
+
+            <div
+                class="result"
+                id="aiResult">
+
+                AI Assistant ready.
+
+            </div>
+
+        </div>
+
+
+        <!-- Emergency Contact -->
+
+        <div class="card">
+
+            <h2>📞 Emergency Contact</h2>
+
+
+            <input
+                type="text"
+                id="contactName"
+                placeholder="Contact Name">
+
+
+            <input
+                type="tel"
+                id="contactNumber"
+                placeholder="Phone Number">
+
+
+            <button
+                onclick="saveContact()">
+
+                Save Contact
+
+            </button>
+
+
+            <div
+                class="result"
+                id="contactResult">
+
+                No contact saved.
+
+            </div>
+
+        </div>
+
+
+        <!-- History -->
+
+        <div class="card">
+
+            <h2>📊 Emergency History</h2>
+
+
+            <div id="history">
+
+                No emergency reports yet.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    ResQ AI © 2026
+
+</footer>
+
+
+
+<script>
+
+
+let selectedEmergency = "";
+
+
+/* SOS FUNCTION */
+
+function sendSOS() {
+
+    document.getElementById("sosResult").innerHTML =
+        "🚨 SOS ACTIVATED! Emergency alert created.";
+
+    addHistory("SOS Alert Activated");
+
+    alert(
+        "Emergency SOS Activated!"
+    );
+
+}
+
+
+
+/* SELECT EMERGENCY */
+
+function selectEmergency(type) {
+
+    selectedEmergency = type;
+
+    document.getElementById(
+        "emergencyResult"
+    ).innerHTML =
+        "Selected: <b>" +
+        type +
+        "</b>";
+
+    addHistory(
+        "Emergency Selected: " + type
+    );
+
+}
+
+
+
+/* LOCATION */
+
+function getLocation() {
+
+    let result =
+        document.getElementById(
+            "locationResult"
+        );
+
+
+    if (navigator.geolocation) {
+
+        result.innerHTML =
+            "Getting location...";
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+
+                let latitude =
+                    position.coords.latitude;
+
+                let longitude =
+                    position.coords.longitude;
+
+
+                result.innerHTML =
+                    "📍 Location Found!<br>" +
+                    "Latitude: " +
+                    latitude.toFixed(5) +
+                    "<br>Longitude: " +
+                    longitude.toFixed(5);
+
+
+                addHistory(
+                    "Location Retrieved"
+                );
+
+            },
+
+
+            function() {
+
+                result.innerHTML =
+                    "❌ Unable to access location.";
+
+            }
+
+        );
+
+    }
+
+    else {
+
+        result.innerHTML =
+            "Geolocation not supported.";
+
+    }
+
+}
+
+
+
+/* AI ANALYSIS */
+
+function analyzeEmergency() {
+
+    let message =
+        document.getElementById(
+            "userMessage"
+        ).value.toLowerCase();
+
+
+    let result =
+        document.getElementById(
+            "aiResult"
+        );
+
+
+    if (message === "") {
+
+        result.innerHTML =
+            "Please describe your emergency.";
+
+        return;
+
+    }
+
+
+    if (
+        message.includes("accident") ||
+        message.includes("crash")
+    ) {
+
+        result.innerHTML =
+            "🚗 AI Analysis: Road Accident Detected.<br>" +
+            "Please stay safe and seek emergency help.";
+
+        selectedEmergency =
+            "Road Accident";
+
+        addHistory(
+            "AI detected Road Accident"
+        );
+
+    }
+
+
+    else if (
+        message.includes("fire") ||
+        message.includes("smoke")
+    ) {
+
+        result.innerHTML =
+            "🔥 AI Analysis: Fire Emergency Detected.<br>" +
+            "Move to a safe location.";
+
+        selectedEmergency =
+            "Fire Emergency";
+
+        addHistory(
+            "AI detected Fire Emergency"
+        );
+
+    }
+
+
+    else if (
+        message.includes("medical") ||
+        message.includes("blood") ||
+        message.includes("unconscious")
+    ) {
+
+        result.innerHTML =
+            "🏥 AI Analysis: Medical Emergency Detected.<br>" +
+            "Seek immediate medical assistance.";
+
+        selectedEmergency =
+            "Medical Emergency";
+
+        addHistory(
+            "AI detected Medical Emergency"
+        );
+
+    }
+
+
+    else {
+
+        result.innerHTML =
+            "⚠️ General Emergency Detected.<br>" +
+            "Share your location and contact emergency support.";
+
+        addHistory(
+            "AI detected General Emergency"
+        );
+
+    }
+
+}
+
+
+
+/* SAVE CONTACT */
+
+function saveContact() {
+
+    let name =
+        document.getElementById(
+            "contactName"
+        ).value;
+
+
+    let number =
+        document.getElementById(
+            "contactNumber"
+        ).value;
+
+
+    if (
+        name === "" ||
+        number === ""
+    ) {
+
+        document.getElementById(
+            "contactResult"
+        ).innerHTML =
+            "❌ Enter name and phone number.";
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "contactResult"
+    ).innerHTML =
+        "✅ Contact Saved:<br>" +
+        name +
+        "<br>" +
+        number;
+
+
+}
+
+
+
+/* HISTORY */
+
+function addHistory(text) {
+
+    let history =
+        document.getElementById(
+            "history"
+        );
+
+
+    if (
+        history.innerHTML.includes(
+            "No emergency reports"
+        )
+    ) {
+
+        history.innerHTML = "";
+
+    }
+
+
+    let item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "history-item";
+
+
+    item.innerHTML =
+        "<b>" +
+        text +
+        "</b><br>" +
+        new Date().toLocaleString();
+
+
+    history.prepend(item);
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
